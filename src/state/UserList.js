@@ -3,22 +3,41 @@ import { useState } from "react";
 const UserList = () => {
   const [userList, setUserList] = useState([]);
 
+  const onAddUser = () => setUserList(userList.concat({ name: "", age: 0 }));
+
+  const onCheckUserListData = () =>
+    console.log(JSON.stringify(userList, null, 2));
+
+  const onChangeUserListData = index => e => {
+    const { name, value } = e.target;
+
+    const targetBefore = userList.slice(0, index);
+    const targetAfter = userList.slice(index + 1);
+    const target = { ...userList[index] };
+
+    target[name] = name === "age" ? Number(value) : value;
+
+    const newUserList = [...targetBefore, target, ...targetAfter];
+
+    setUserList(newUserList);
+  };
+
+  const onRemove1 = index => () => {
+    const targetBefore = userList.slice(0, index);
+    const targetAfter = userList.slice(index + 1);
+    const newUserList = [...targetBefore, ...targetAfter];
+    setUserList(newUserList);
+  };
+
+  const onRemove2 = index => () => {
+    const newUserList = userList.filter((_, idx) => idx !== index);
+    setUserList(newUserList);
+  };
+
   return (
     <div>
-      <button
-        onClick={() => {
-          setUserList(userList.concat({ name: "", age: 0 }));
-        }}
-      >
-        추가
-      </button>
-      <button
-        onClick={() => {
-          console.log(JSON.stringify(userList, null, 2));
-        }}
-      >
-        데이터 확인
-      </button>
+      <button onClick={onAddUser}>추가</button>
+      <button onClick={onCheckUserListData}>데이터 확인</button>
       <table>
         <thead>
           <tr>
@@ -37,64 +56,26 @@ const UserList = () => {
                   <input
                     name="name"
                     value={name}
-                    onChange={e => {
-                      const targetBefore = userList.slice(0, index);
-                      const targetAfter = userList.slice(index + 1);
-                      const target = { ...userList[index] };
-
-                      target["name"] = e.target.value;
-
-                      const newUserList = [
-                        ...targetBefore,
-                        target,
-                        ...targetAfter
-                      ];
-
-                      setUserList(newUserList);
-                      console.log(e.target.value);
-                    }}
+                    onChange={onChangeUserListData(index)}
                   />
                 </td>
                 <td>
                   <input
                     name="age"
                     value={age}
-                    onChange={e => {
-                      const targetBefore = userList.slice(0, index);
-                      const targetAfter = userList.slice(index + 1);
-                      const target = { ...userList[index] };
-
-                      target["age"] = Number(e.target.value);
-
-                      const newUserList = [
-                        ...targetBefore,
-                        target,
-                        ...targetAfter
-                      ];
-
-                      setUserList(newUserList);
-                      console.log(e.target.value);
-                    }}
+                    onChange={onChangeUserListData(index)}
                   />
                 </td>
                 <td>
+                  <button onClick={onRemove1(index)}>삭제 방법 1</button>
+                </td>
+                <td>
+                  <button onClick={onRemove2(index)}>삭제 방법 2</button>
                   <button
                     onClick={() => {
                       const targetBefore = userList.slice(0, index);
                       const targetAfter = userList.slice(index + 1);
                       const newUserList = [...targetBefore, ...targetAfter];
-                      setUserList(newUserList);
-                    }}
-                  >
-                    삭제 방법 1
-                  </button>
-                </td>
-                <td>
-                  <button
-                    onClick={() => {
-                      const newUserList = userList.filter(
-                        (_, idx) => idx !== index
-                      );
                       setUserList(newUserList);
                     }}
                   >
