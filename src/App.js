@@ -1,7 +1,7 @@
-import Resize from "./useEffect/practice/Resize";
+import CountTimer from "./useEffect/practice/CountTimer";
 
 const App = () => {
-  return <Resize />;
+  return <CountTimer />;
 };
 
 export default App;
